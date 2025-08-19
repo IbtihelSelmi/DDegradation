@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Prédiction - Service Réanimation Médicale</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+      .main-wrapper {pip install joblib
+
+        padding-top: 20px;
+        padding-bottom: 20px;
+      }
+
+      body {
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+      }
+
+      .header-bg {
+        background-color: #006c9c;
+        color: white;
+        padding: 15px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Align items to the edges */
+        flex-wrap: wrap;
+        text-align: center;
+      }
+
+      .header-bg img {
+        height: 70px;
+        margin-right: 15px;
+      }
+
+      .header-text h2 {
+        font-size: 1.1rem;
+        margin: 0;
+      }
+
+      .title {
+        font-size: 3rem; /* Taille du titre plus grande */
+        font-weight: bold;
+        text-align: center;
+        margin-top: 20px;
+        color: #006c9c;
+      }
+
+      .card-custom {
+        background-color: #f2f8fc;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+
+      .form-center {
+        display: flex;
+        justify-content: center;
+      }
+
+      .form-input {
+        width: 300px;
+        max-width: 100%;
+      }
+
+      .btn-lg {
+        font-size: 1.25rem;
+        padding: 0.75rem 1rem;
+      }
+
+      .prediction-box {
+        border: 2px solid #dc3545;
+        color: #dc3545;
+        padding: 15px;
+        border-radius: 10px;
+        font-weight: bold;
+        background-color: #ffecec;
+      }
+
+      /* Style pour les nouveaux boutons */
+      .header-buttons {
+        display: flex;
+        gap: 10px;
+      }
+
+      .header-buttons a {
+        color: white;
+        background-color: #004d6e; /* Différente couleur pour les boutons */
+        padding: 8px 15px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: background-color 0.3s;
+      }
+
+      .header-buttons a:hover {
+        background-color: #00385c;
+      }
+
+      @media (max-width: 768px) {
+        .header-bg {
+          flex-direction: column;
+          padding: 10px;
+        }
+
+        .header-bg img {
+          height: 60px;
+          margin: 0 auto 10px auto;
+        }
+
+        .header-text h2 {
+          font-size: 1.2rem;
+          line-height: 1.4;
+        }
+
+        h3 {
+          font-size: 1.1rem;
+        }
+
+        .btn-lg {
+          font-size: 1rem;
+          padding: 0.6rem 0.75rem;
+        }
+
+        .card-custom {
+          padding: 15px;
+        }
+
+        .prediction-box {
+          font-size: 1rem;
+        }
+
+        .header-buttons {
+          flex-direction: column;
+          margin-top: 10px;
+        }
+
+        .header-buttons a {
+          margin-bottom: 5px;
+        }
+      }
+
+      .row.g-4 {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .col-md-6 {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .card-custom {
+        width: 100%;
+      }
+  </style>
+</head>
+<body>
+
+  <div class="main-wrapper">
+    <header class="header-bg">
+      <img src="/static/logo.png" alt="Logo" />
+      <div class="header-text">
+        <h2>Service de Réanimation Médicale - Hôpital Farhat Hached Sousse</h2>
+      </div>
+      <div class="header-buttons">
+        <a href="#accueil">Accueil</a>
+        <a href="#detailles">Détails</a>
+      </div>
+    </header>
+
+    <div class="container-lg my-5">
+      <div class="title">PDA : Prédiction de la dégradation aiguë</div> <!-- Titre plus grand sous l'en-tête -->
+      <form method="POST" action="/predict">
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card-custom">
+        <div class="mb-3">
+          <label for="age" class="form-label">Âge :</label>
+          <input type="number" class="form-control" name="age" id="age" />
+        </div>
+        <div class="mb-3">
+          <label for="gender" class="form-label">Genre (1=Femme, 0=Homme) :</label>
+          <input type="number" class="form-control" name="gender" id="gender" />
+        </div>
+        <div class="mb-3">
+          <label for="heart_rate" class="form-label">Fréquence cardiaque :</label>
+          <input type="number" class="form-control" name="heart_rate" id="heart_rate" required />
+        </div>
+        <div class="mb-3">
+          <label for="SBP" class="form-label">Pression artérielle systolique (SBP) :</label>
+          <input type="number" class="form-control" name="SBP" id="SBP" required />
+        </div>
+        <div class="mb-3">
+          <label for="DBP" class="form-label">Pression artérielle diastolique (DBP) :</label>
+          <input type="number" class="form-control" name="DBP" id="DBP" required />
+        </div>
+        <div class="mb-3">
+          <label for="lactates" class="form-label">Lactates :</label>
+          <input type="number" step="0.01" class="form-control" name="lactates" id="lactates" placeholder="optionnel"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card-custom">
+        <div class="mb-3">
+          <label for="SOFA_score" class="form-label">SOFA_score :</label>
+          <input type="number" class="form-control" name="SOFA_score" id="SOFA_score" required />
+        </div>
+        <div class="mb-3">
+          <label for="HTA" class="form-label">HTA :</label>
+          <input type="number" class="form-control" name="HTA" id="HTA" required />
+        </div>
+        <div class="mb-3">
+          <label for="SpO2" class="form-label">SpO2 :</label>
+          <input type="number" class="form-control" name="SpO2" id="SpO2" required />
+        </div>
+        <div class="mb-3">
+          <label for="SAPSII" class="form-label">SAPS II :</label>
+          <input type="number" class="form-control" name="SAPSII" id="SAPSII" required />
+        </div>
+        <div class="mb-3">
+          <label for="glasgow_coma_scale" class="form-label">Glasgow Coma Scale :</label>
+          <input type="number" class="form-control" name="glasgow_coma_scale" id="glasgow_coma_scale" required />
+        </div>
+        <div class="mb-3">
+          <label for="fio2" class="form-label">FiO2 :</label>
+          <input type="number" step="0.01" class="form-control" name="FiO2" id="FiO2" required />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center mb-4">
+    <button type="submit" class="btn btn-primary px-4 py-2">Prédire</button>
+  </div>
+</form>
+
+  {% if prediction %}
+  {% if "faible" in prediction %}
+    <div class="text-center"
+         style="background-color: #d4edda; color: #155724; border: 2px solid #c3e6cb; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+      {{ prediction }}
+    </div>
+  {% elif "élevé" in prediction %}
+    <div class="text-center"
+         style="background-color: #f8d7da; color: #721c24; border: 2px solid #f5c6cb; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+      {{ prediction }}
+    </div>
+  {% endif %}
+{% endif %}
+
+
+
+{% if accuracy %}
+  <p class="text-center mt-2" style="margin-bottom: 30px;">Précision du modèle : {{ accuracy }}%</p>
+{% endif %}
+
+    <footer class="text-center py-3 bg-light">
+  &copy; 2025 Service de Réanimation Médicale. Tous droits réservés.
+</footer>
+
+  </div>
+</body>
+</html>
